@@ -193,7 +193,7 @@ int move_normal_pmd(struct vm_area_struct *vma, struct vm_area_struct *new_vma,
 
 	/*
 	 * The destination pmd shouldn't be established, free_pgtables()
-	 * should have release it.
+	 * should have released it.
 	 *
 	 * However, there's a case during execve() where we use mremap
 	 * to move the initial stack, and in that case the target area
