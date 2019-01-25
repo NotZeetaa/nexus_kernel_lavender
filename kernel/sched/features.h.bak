@@ -78,6 +78,8 @@ SCHED_FEAT(ENERGY_AWARE, true)
 #else
 SCHED_FEAT(ENERGY_AWARE, false)
 #endif
+<<<<<<< HEAD
+=======
 
 /*
  * Energy aware scheduling algorithm choices:
