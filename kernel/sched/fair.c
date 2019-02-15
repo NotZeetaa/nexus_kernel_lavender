@@ -7511,6 +7511,43 @@ next:
 done:
 	schedstat_inc(p, se.statistics.nr_wakeups_sis_count);
 	schedstat_inc(this_rq(), eas_stats.sis_count);
+	return target;
+}
+
+static int select_idle_sibling(struct task_struct *p, int prev, int target)
+{
+	if (!sysctl_sched_cstate_aware)
+		return __select_idle_sibling(p, prev, target);
+
+	return select_idle_sibling_cstate_aware(p, prev, target);
+}
+
+static inline bool task_fits_capacity(struct task_struct *p,
+					long capacity,
+					int cpu)
+{
+	unsigned int margin;
+
+	if (capacity_orig_of(task_cpu(p)) > capacity_orig_of(cpu))
+		margin = sched_capacity_margin_down[task_cpu(p)];
+	else
+		margin = sched_capacity_margin_up[task_cpu(p)];
+
+	return capacity * 1024 > boosted_task_util(p) * margin;
+}
+
+static inline bool task_fits_max(struct task_struct *p, int cpu)
+{
+	unsigned long capacity = capacity_orig_of(cpu);
+	unsigned long max_capacity = cpu_rq(cpu)->rd->max_cpu_capacity.val;
+
+	if (capacity == max_capacity)
+		return true;
+
+	if ((task_boost_policy(p) == SCHED_BOOST_ON_BIG ||
+			schedtune_task_boost(p) > 0) &&
+			is_min_capacity_cpu(cpu))
+		return false;
 
 	return target;
 }
