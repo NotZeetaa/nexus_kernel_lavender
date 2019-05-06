@@ -62,6 +62,12 @@
 #define PSCI_POWER_STATE(reset) (reset << 30)
 #define PSCI_AFFINITY_LEVEL(lvl) ((lvl & 0x3) << 24)
 static remote_spinlock_t scm_handoff_lock;
+#define BIAS_HYST (bias_hyst * NSEC_PER_MSEC)
+
+#define MAX_S2IDLE_CPU_ATTEMPTS  32   /* divide by # cpus for max suspends */
+
+static struct system_pm_ops *sys_pm_ops;
+
 
 struct lpm_cluster *lpm_root_node;
 
@@ -104,6 +110,8 @@ static struct hrtimer lpm_hrtimer;
 static struct hrtimer histtimer;
 static int lpm_cpu_callback(struct notifier_block *cpu_nb,
 				unsigned long action, void *hcpu);
+static DEFINE_PER_CPU(struct hrtimer, histtimer);
+static DEFINE_PER_CPU(struct hrtimer, biastimer);
 
 static void cluster_unprepare(struct lpm_cluster *cluster,
 		const struct cpumask *cpu, int child_idx, bool from_idle,
@@ -312,6 +320,13 @@ static int lpm_cpu_callback(struct notifier_block *cpu_nb,
 }
 
 #ifdef CONFIG_ARM_PSCI
+static int lpm_dying_cpu(unsigned int cpu)
+{
+	struct lpm_cluster *cluster = per_cpu(cpu_lpm, cpu)->parent;
+
+	cluster_prepare(cluster, get_cpu_mask(cpu), NR_LPM_LEVELS, false, 0);
+	return 0;
+}
 
 static int __init set_cpuidle_ops(void)
 {
@@ -325,6 +340,9 @@ static int __init set_cpuidle_ops(void)
 
 exit:
 	return ret;
+	cluster_unprepare(cluster, get_cpu_mask(cpu), NR_LPM_LEVELS, false,
+						0, true);
+	return 0;
 }
 
 #endif
@@ -1452,6 +1470,19 @@ bool psci_enter_sleep(struct lpm_cluster *cluster, int idx, bool from_idle)
 			start_critical_timings();
 			return 1;
 		}
+	}
+
+	if (from_idle && cpu->levels[idx].use_bc_timer) {
+		if (tick_broadcast_enter())
+			return success;
+	}
+
+	state_id = get_cluster_id(cpu->parent, &affinity_level, from_idle);
+	power_state = PSCI_POWER_STATE(cpu->levels[idx].is_reset);
+	affinity_level = PSCI_AFFINITY_LEVEL(affinity_level);
+	state_id += power_state + affinity_level + cpu->levels[idx].psci_id;
+
+	stop_critical_timings();
 
 		affinity_level = PSCI_AFFINITY_LEVEL(affinity_level);
 		state_id |= (power_state | affinity_level
@@ -1477,6 +1508,7 @@ bool psci_enter_sleep(struct lpm_cluster *cluster, int idx, bool from_idle)
 		int power_state =
 			PSCI_POWER_STATE(cluster->cpu->levels[idx].is_reset);
 		bool success = false;
+	start_critical_timings();
 
 		affinity_level = PSCI_AFFINITY_LEVEL(affinity_level);
 		state_id |= (power_state | affinity_level
@@ -1835,6 +1867,8 @@ static const struct platform_suspend_ops lpm_suspend_ops = {
 static int lpm_probe(struct platform_device *pdev)
 {
 	int ret;
+	unsigned int cpu;
+	struct hrtimer *cpu_histtimer;
 	struct kobject *module_kobj = NULL;
 
 	get_online_cpus();
