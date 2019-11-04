@@ -91,6 +91,13 @@ queue_ra_store(struct request_queue *q, const char *page, size_t count)
 		return ret;
 
 	q->backing_dev_info->ra_pages = ra_kb >> (PAGE_CACHE_SHIFT - 10);
+	if (!strcmp(current->comm, "init"))
+		ra_kb = VM_MAX_READAHEAD;
+
+	q->backing_dev_info->ra_pages = ra_kb >> (PAGE_SHIFT - 10);
+
+	if (!strcmp(current->comm, "init"))
+		ra_kb = VM_MAX_READAHEAD;
 
 	return ret;
 }
