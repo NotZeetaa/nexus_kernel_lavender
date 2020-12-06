@@ -1,7 +1,7 @@
 /*
  *
  * Automatically generated file; DO NOT EDIT.
- * Linux/arm64 4.4.247 Kernel Configuration
+ * Linux/arm64 4.4.248 Kernel Configuration
  *
  */
 #define CONFIG_NF_CONNTRACK_H323 1
@@ -894,7 +894,6 @@
 #define CONFIG_QPNP_USB_PDPHY 1
 #define CONFIG_PANIC_TIMEOUT 5
 #define CONFIG_QUOTA_NETLINK_INTERFACE 1
-#define CONFIG_SIMPLE_GPU_ALGORITHM 1
 #define CONFIG_INPUT_JOYSTICK 1
 #define CONFIG_MSM_QDSP6_NOTIFIER 1
 #define CONFIG_MSM_IDLE_STATS_FIRST_BUCKET 62500
@@ -956,7 +955,7 @@
 #define CONFIG_HAVE_ARM_SMCCC 1
 #define CONFIG_MSM_PIL_SSR_GENERIC 1
 #define CONFIG_MSM_VIDC_V4L2 1
-#define CONFIG_LOCALVERSION "-NexusKernel-Lavender-Q-New-V2"
+#define CONFIG_LOCALVERSION "-NexusKernel-Lavender-Q-Old-V3"
 #define CONFIG_REGULATOR_PROXY_CONSUMER 1
 #define CONFIG_CRYPTO 1
 #define CONFIG_SCHED_DEBUG 1

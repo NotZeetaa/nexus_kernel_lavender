@@ -1,1 +1,1 @@
-#define UTS_RELEASE "4.4.247-NexusKernel-Lavender-Q-New-V2"
+#define UTS_RELEASE "4.4.248-NexusKernel-Lavender-Q-Old-V3"
