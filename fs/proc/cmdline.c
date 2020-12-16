@@ -45,6 +45,15 @@ static void remove_safetynet_flags(char *cmd)
 	remove_flag(cmd, "androidboot.veritymode=");
 }
 
+static bool in_recovery;
+
+static int __init boot_mode_setup(char *value)
+{
+	in_recovery = !strcmp(value, "recovery");
+	return 1;
+}
+__setup("androidboot.mode=", boot_mode_setup);
+
 static int __init proc_cmdline_init(void)
 {
 	strcpy(new_command_line, saved_command_line);
@@ -53,7 +62,8 @@ static int __init proc_cmdline_init(void)
 	 * Remove various flags from command line seen by userspace in order to
 	 * pass SafetyNet CTS check.
 	 */
-	remove_safetynet_flags(new_command_line);
+	if (!in_recovery)
+		patch_safetynet_flags(new_command_line);
 
 	proc_create("cmdline", 0, NULL, &cmdline_proc_fops);
 	return 0;
