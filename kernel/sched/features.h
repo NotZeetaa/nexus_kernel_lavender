@@ -23,7 +23,7 @@ SCHED_FEAT(NEXT_BUDDY, true)
  * wake-preempt) as that likely will touch the same data, increases
  * cache locality.
  */
-SCHED_FEAT(LAST_BUDDY, false)
+SCHED_FEAT(LAST_BUDDY, true)
 
 /*
  * Consider buddies to be cache hot, decreases the likelyness of a
