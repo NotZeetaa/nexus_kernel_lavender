@@ -33,3 +33,4 @@ DATE_END=$(date +"%s")
 DIFF=$(($DATE_END - $DATE_START))
 echo "Time: $(($DIFF / 60)) minutes(i) and $(($DIFF % 60)) seconds."
 echo
+echo " Congrats NotZeetaa Ur Build Finished🔥 "
