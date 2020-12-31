@@ -1,7 +1,7 @@
-/* This file is auto generated, version 11 */
+/* This file is auto generated, version 7 */
 /* SMP PREEMPT */
 #define UTS_MACHINE "arm64"
-#define UTS_VERSION "#11 SMP PREEMPT Wed Dec 30 17:08:14 WET 2020"
+#define UTS_VERSION "#7 SMP PREEMPT Thu Dec 31 12:25:35 WET 2020"
 #define LINUX_COMPILE_BY "Zeetaa"
 #define LINUX_COMPILE_HOST "ZeetaaPrjkt"
-#define LINUX_COMPILER ""
+#define LINUX_COMPILER "gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04) "

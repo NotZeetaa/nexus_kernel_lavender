@@ -18,7 +18,7 @@ blu=$(tput setaf 4)             # blue
 txtrst=$(tput sgr0)             # reset
 blink=$(tput blink)             # blink
 
-rm -rf /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/nexus/out/arch/arm64/boot/Image.gz-dtb
+rm -f /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/nexus/out/arch/arm64/boot/Image.gz-dtb*
 
 export KBUILD_BUILD_USER=Zeetaa
 export KBUILD_BUILD_HOST=ZeetaaPrjkt
@@ -33,29 +33,24 @@ function compile() {
 compile
 
 
-function check {
-    if [ -f /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/nexus/out/arch/arm64/boot/Image.gz-dtb ]
-      then
-       zip
-      else
-       echo "Build Failed"
-    fi
-}
-
-function zip {
    cd /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/
-   rm -rf /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/*.zip;
-   rm -rf /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/Image.gz-dtb
+   rm -f /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/*.zip;
+   rm -f /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/Image.gz-dtb*
    cp -af /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/nexus/out/arch/arm64/boot/Image.gz-dtb /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/
+   
    zip -r9 Nexus-Q-lavender-old-V5.zip * -x .git README.md *placeholder
-   echo -e "${bldgrn}"
+
    echo "-------------------"
    echo "Build Complet in:"
    echo "-------------------"
    echo -e "${txtrst}"
+
+
    DATE_END=$(date +"%s")
    DIFF=$(($DATE_END - $DATE_START))
    echo "Time: $(($DIFF / 60)) minutes(i) and $(($DIFF % 60)) seconds."
+   cd /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/nexus/
+
 
 
 
@@ -65,4 +60,4 @@ echo "  ███╔╝ █████╗  █████╗     ██║   �
 echo " ███╔╝  ██╔══╝  ██╔══╝     ██║   ██╔══██║██╔══██║"
 echo "███████╗███████╗███████╗   ██║   ██║  ██║██║  ██║"
 echo "╚══════╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝"
-                                                 
+cd ..
