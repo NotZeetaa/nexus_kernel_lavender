@@ -1495,6 +1495,217 @@ EXPORT_SYMBOL(drm_atomic_clean_old_fb);
 
 int drm_mode_atomic_ioctl(struct drm_device *dev,
 			  void *data, struct drm_file *file_priv)
+/**
+ * DOC: explicit fencing properties
+ *
+ * Explicit fencing allows userspace to control the buffer synchronization
+ * between devices. A Fence or a group of fences are transfered to/from
+ * userspace using Sync File fds and there are two DRM properties for that.
+ * IN_FENCE_FD on each DRM Plane to send fences to the kernel and
+ * OUT_FENCE_PTR on each DRM CRTC to receive fences from the kernel.
+ *
+ * As a contrast, with implicit fencing the kernel keeps track of any
+ * ongoing rendering, and automatically ensures that the atomic update waits
+ * for any pending rendering to complete. For shared buffers represented with
+ * a &struct dma_buf this is tracked in &struct reservation_object.
+ * Implicit syncing is how Linux traditionally worked (e.g. DRI2/3 on X.org),
+ * whereas explicit fencing is what Android wants.
+ *
+ * "IN_FENCE_FD”:
+ *	Use this property to pass a fence that DRM should wait on before
+ *	proceeding with the Atomic Commit request and show the framebuffer for
+ *	the plane on the screen. The fence can be either a normal fence or a
+ *	merged one, the sync_file framework will handle both cases and use a
+ *	fence_array if a merged fence is received. Passing -1 here means no
+ *	fences to wait on.
+ *
+ *	If the Atomic Commit request has the DRM_MODE_ATOMIC_TEST_ONLY flag
+ *	it will only check if the Sync File is a valid one.
+ *
+ *	On the driver side the fence is stored on the @fence parameter of
+ *	&struct drm_plane_state. Drivers which also support implicit fencing
+ *	should set the implicit fence using drm_atomic_set_fence_for_plane(),
+ *	to make sure there's consistent behaviour between drivers in precedence
+ *	of implicit vs. explicit fencing.
+ *
+ * "OUT_FENCE_PTR”:
+ *	Use this property to pass a file descriptor pointer to DRM. Once the
+ *	Atomic Commit request call returns OUT_FENCE_PTR will be filled with
+ *	the file descriptor number of a Sync File. This Sync File contains the
+ *	CRTC fence that will be signaled when all framebuffers present on the
+ *	Atomic Commit * request for that given CRTC are scanned out on the
+ *	screen.
+ *
+ *	The Atomic Commit request fails if a invalid pointer is passed. If the
+ *	Atomic Commit request fails for any other reason the out fence fd
+ *	returned will be -1. On a Atomic Commit with the
+ *	DRM_MODE_ATOMIC_TEST_ONLY flag the out fence will also be set to -1.
+ *
+ *	Note that out-fences don't have a special interface to drivers and are
+ *	internally represented by a &struct drm_pending_vblank_event in struct
+ *	&drm_crtc_state, which is also used by the nonblocking atomic commit
+ *	helpers and for the DRM event handling for existing userspace.
+ */
+
+struct drm_out_fence_state {
+	s32 __user *out_fence_ptr;
+	struct sync_file *sync_file;
+	int fd;
+};
+
+static int setup_out_fence(struct drm_out_fence_state *fence_state,
+			   struct dma_fence *fence)
+{
+	fence_state->fd = get_unused_fd_flags(O_CLOEXEC);
+	if (fence_state->fd < 0)
+		return fence_state->fd;
+
+	if (put_user(fence_state->fd, fence_state->out_fence_ptr))
+		return -EFAULT;
+
+	fence_state->sync_file = sync_file_create(fence);
+	if (!fence_state->sync_file)
+		return -ENOMEM;
+
+	return 0;
+}
+
+static int prepare_crtc_signaling(struct drm_device *dev,
+				  struct drm_atomic_state *state,
+				  struct drm_mode_atomic *arg,
+				  struct drm_file *file_priv,
+				  struct drm_out_fence_state **fence_state,
+				  unsigned int *num_fences)
+{
+	struct drm_crtc *crtc;
+	struct drm_crtc_state *crtc_state;
+	int i, c = 0, ret;
+
+	if (arg->flags & DRM_MODE_ATOMIC_TEST_ONLY)
+		return 0;
+
+	for_each_new_crtc_in_state(state, crtc, crtc_state, i) {
+		s32 __user *fence_ptr;
+
+		fence_ptr = get_out_fence_for_crtc(crtc_state->state, crtc);
+
+		if (arg->flags & DRM_MODE_PAGE_FLIP_EVENT || fence_ptr) {
+			struct drm_pending_vblank_event *e;
+
+			e = create_vblank_event(dev, arg->user_data);
+			if (!e)
+				return -ENOMEM;
+
+			crtc_state->event = e;
+		}
+
+		if (arg->flags & DRM_MODE_PAGE_FLIP_EVENT) {
+			struct drm_pending_vblank_event *e = crtc_state->event;
+
+			if (!file_priv)
+				continue;
+
+			ret = drm_event_reserve_init(dev, file_priv, &e->base,
+						     &e->event.base);
+			if (ret) {
+				kfree(e);
+				crtc_state->event = NULL;
+				return ret;
+			}
+		}
+
+		if (fence_ptr) {
+			struct dma_fence *fence;
+			struct drm_out_fence_state *f;
+
+			f = krealloc(*fence_state, sizeof(**fence_state) *
+				     (*num_fences + 1), GFP_KERNEL);
+			if (!f)
+				return -ENOMEM;
+
+			memset(&f[*num_fences], 0, sizeof(*f));
+
+			f[*num_fences].out_fence_ptr = fence_ptr;
+			*fence_state = f;
+
+			fence = drm_crtc_create_fence(crtc);
+			if (!fence)
+				return -ENOMEM;
+
+			ret = setup_out_fence(&f[(*num_fences)++], fence);
+			if (ret) {
+				dma_fence_put(fence);
+				return ret;
+			}
+
+			crtc_state->event->base.fence = fence;
+		}
+
+		c++;
+	}
+
+	/*
+	 * Having this flag means user mode pends on event which will never
+	 * reach due to lack of at least one CRTC for signaling
+	 */
+	if (c == 0 && (arg->flags & DRM_MODE_PAGE_FLIP_EVENT))
+		return -EINVAL;
+
+	return 0;
+}
+
+static void complete_crtc_signaling(struct drm_device *dev,
+				    struct drm_atomic_state *state,
+				    struct drm_out_fence_state *fence_state,
+				    unsigned int num_fences,
+				    bool install_fds)
+{
+	struct drm_crtc *crtc;
+	struct drm_crtc_state *crtc_state;
+	int i;
+
+	if (install_fds) {
+		for (i = 0; i < num_fences; i++)
+			fd_install(fence_state[i].fd,
+				   fence_state[i].sync_file->file);
+
+		kfree(fence_state);
+		return;
+	}
+
+	for_each_new_crtc_in_state(state, crtc, crtc_state, i) {
+		struct drm_pending_vblank_event *event = crtc_state->event;
+		/*
+		 * Free the allocated event. drm_atomic_helper_setup_commit
+		 * can allocate an event too, so only free it if it's ours
+		 * to prevent a double free in drm_atomic_state_clear.
+		 */
+		if (event && (event->base.fence || event->base.file_priv)) {
+			drm_event_cancel_free(dev, &event->base);
+			crtc_state->event = NULL;
+		}
+	}
+
+	if (!fence_state)
+		return;
+
+	for (i = 0; i < num_fences; i++) {
+		if (fence_state[i].sync_file)
+			fput(fence_state[i].sync_file->file);
+		if (fence_state[i].fd >= 0)
+			put_unused_fd(fence_state[i].fd);
+
+		/* If this fails log error to the user */
+		if (fence_state[i].out_fence_ptr &&
+		    put_user(-1, fence_state[i].out_fence_ptr))
+			DRM_DEBUG_ATOMIC("Couldn't clear out_fence_ptr\n");
+	}
+
+	kfree(fence_state);
+}
+
+static int __drm_mode_atomic_ioctl(struct drm_device *dev, void *data,
+				   struct drm_file *file_priv)
 {
 	struct drm_mode_atomic *arg = data;
 	uint32_t __user *objs_ptr = (uint32_t __user *)(unsigned long)(arg->objs_ptr);
@@ -1711,5 +1922,24 @@ int drm_mode_atomic_ioctl(struct drm_device *dev, void *data,
 	set_user_nice(current, old_nice);
 	set_cpus_allowed_common(current, &old_cpus_allowed);
 	preempt_enable_no_resched();
+int drm_mode_atomic_ioctl(struct drm_device *dev, void *data,
+			  struct drm_file *file_priv)
+{
+	/*
+	 * Optimistically assume the current task won't migrate to another CPU
+	 * and restrict the current CPU to shallow idle states so that it won't
+	 * take too long to finish running the ioctl whenever the ioctl runs a
+	 * command that sleeps, such as for an "atomic" commit.
+	 */
+	struct pm_qos_request req = {
+		.type = PM_QOS_REQ_AFFINE_CORES,
+		.cpus_affine = ATOMIC_INIT(BIT(raw_smp_processor_id()))
+	};
+	int ret;
+
+	pm_qos_add_request(&req, PM_QOS_CPU_DMA_LATENCY, 100);
+	ret = __drm_mode_atomic_ioctl(dev, data, file_priv);
+	pm_qos_remove_request(&req);
+
 	return ret;
 }
