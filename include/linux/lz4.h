@@ -133,6 +133,23 @@ typedef union {
 	LZ4HC_CCtx_internal internal_donotuse;
 } LZ4_streamHC_t;
 
+/*
+ * LZ4_streamDecode_t - information structure to track an
+ *	LZ4 stream during decompression.
+ *
+ * init this structure using LZ4_setStreamDecode (or memset()) before first use
+ */
+typedef struct {
+	const uint8_t *externalDict;
+	size_t extDictSize;
+	const uint8_t *prefixEnd;
+	size_t prefixSize;
+} LZ4_streamDecode_t_internal;
+typedef union {
+	unsigned long long table[LZ4_STREAMDECODESIZE_U64];
+	LZ4_streamDecode_t_internal internal_donotuse;
+} LZ4_streamDecode_t;
+
 /*-************************************************************************
  *	SIZE OF STATE
  **************************************************************************/
@@ -287,7 +304,7 @@ int LZ4_decompress_fast(const char *source, char *dest, int originalSize);
  * @compressedSize: is the precise full size of the compressed block
  * @maxDecompressedSize: is the size of 'dest' buffer
  *
- * Decompresses data from 'source' into 'dest'.
+ * Decompresses data fom 'source' into 'dest'.
  * If the source stream is detected malformed, the function will
  * stop decoding and return a negative result.
  * This function is protected against buffer overflow exploits,

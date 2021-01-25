@@ -67,10 +67,6 @@ static FORCE_INLINE int LZ4_decompress_generic(
 	 /* noDict, withPrefix64k, usingExtDict */
 	 int dict,
 	 /* == dest when no prefix */
-	 earlyEnd_directive partialDecoding,
-	 /* noDict, withPrefix64k */
-	 dict_directive dict,
-	 /* always <= dst, == dst when no prefix */
 	 const BYTE * const lowPrefix,
 	 /* only if dict == usingExtDict */
 	 const BYTE * const dictStart,
@@ -91,9 +87,6 @@ static FORCE_INLINE int LZ4_decompress_generic(
 	const BYTE * const dictEnd = (const BYTE *)dictStart + dictSize;
 	static const unsigned int dec32table[] = { 0, 1, 2, 1, 4, 4, 4, 4 };
 	static const int dec64table[] = { 0, 0, 0, -1, 0, 1, 2, 3 };
-	static const unsigned int inc32table[8] = {0, 1, 2, 1, 0, 4, 4, 4};
-	static const int dec64table[8] = {0, 0, 0, -1, -4, 1, 2, 3};
->>>>>>> ee498365fd06... lib: lz4: Update and tweak lz4 algorithm
 
 	const int safeDecode = (endOnInput == endOnInputSize);
 	const int checkOffset = ((safeDecode) && (dictSize < (int)(64 * KB)));
@@ -552,15 +545,6 @@ EXPORT_SYMBOL(LZ4_decompress_fast_usingDict);
 EXPORT_SYMBOL(lz4_decompress_unknownoutputsize);
 EXPORT_SYMBOL(lz4_decompress);
 
-int LZ4_decompress_fast(const char *source, char *dest, int originalSize)
-{
-	return LZ4_decompress_generic(source, dest, 0, originalSize,
-				      endOnOutputSize, decode_full_block,
-				      withPrefix64k,
-				      (BYTE *)dest - 64 * KB, NULL, 0);
-}
-
-#ifndef STATIC
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_DESCRIPTION("LZ4 decompressor");
 #endif
