@@ -391,6 +391,57 @@ static void sde_encoder_phys_cmd_pingpong_config(
 			!phys_enc->hw_ctl->ops.setup_intf_cfg) {
 		SDE_ERROR("invalid arg(s), enc %d\n", phys_enc != 0);
 		return;
+	if (!phys_enc || !phys_enc->hw_pp) {
+		SDE_ERROR("invalid phys encoder\n");
+		return;
+	}
+
+	SDE_DEBUG_CMDENC(cmd_enc, "pp %d\n", phys_enc->hw_pp->idx - PINGPONG_0);
+
+	if (phys_enc->enable_state == SDE_ENC_ENABLED) {
+		if (!phys_enc->cont_splash_enabled)
+			SDE_ERROR("already enabled\n");
+		return;
+	}
+
+	sde_encoder_phys_cmd_enable_helper(phys_enc);
+	phys_enc->enable_state = SDE_ENC_ENABLED;
+}
+
+static bool sde_encoder_phys_cmd_is_autorefresh_enabled(
+		struct sde_encoder_phys *phys_enc)
+{
+	struct sde_encoder_phys_cmd *cmd_enc;
+	struct sde_hw_pingpong *hw_pp;
+	struct sde_hw_intf *hw_intf;
+	struct sde_hw_autorefresh cfg;
+	int ret;
+
+	if (!phys_enc)
+		return 0;
+
+	cmd_enc = to_sde_encoder_phys_cmd(phys_enc);
+	if (!cmd_enc->autorefresh.cfg.enable)
+		return 0;
+
+	if (!phys_enc->hw_pp || !phys_enc->hw_intf)
+		return 0;
+
+	if (!sde_encoder_phys_cmd_is_master(phys_enc))
+		return 0;
+
+	if (phys_enc->has_intf_te) {
+		hw_intf = phys_enc->hw_intf;
+		if (!hw_intf->ops.get_autorefresh)
+			return 0;
+
+		ret = hw_intf->ops.get_autorefresh(hw_intf, &cfg);
+	} else {
+		hw_pp = phys_enc->hw_pp;
+		if (!hw_pp->ops.get_autorefresh)
+			return 0;
+
+		ret = hw_pp->ops.get_autorefresh(hw_pp, &cfg);
 	}
 
 	SDE_DEBUG_CMDENC(cmd_enc, "pp %d, enabling mode:\n",
