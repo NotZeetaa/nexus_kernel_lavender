@@ -373,6 +373,33 @@ static int ion_system_secure_heap_shrink(struct ion_heap *heap, gfp_t gfp_mask,
 						gfp_mask, nr_to_scan);
 }
 
+static int ion_system_secure_heap_pm_freeze(struct ion_heap *heap)
+{
+	struct ion_system_secure_heap *secure_heap;
+	unsigned long count;
+	struct shrink_control sc = {
+		.gfp_mask = GFP_HIGHUSER,
+	};
+
+	secure_heap = container_of(heap, struct ion_system_secure_heap, heap);
+
+	/* Since userspace is frozen, no more requests will be queued */
+	cancel_delayed_work_sync(&secure_heap->prefetch_work);
+
+	count = heap->shrinker.count_objects(&heap->shrinker, &sc);
+	sc.nr_to_scan = count;
+	heap->shrinker.scan_objects(&heap->shrinker, &sc);
+
+	count = heap->shrinker.count_objects(&heap->shrinker, &sc);
+	if (count) {
+		pr_err("%s: Failed to free all objects - %ld remaining",
+		       __func__, count);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
 static struct ion_heap_ops system_secure_heap_ops = {
 	.allocate = ion_system_secure_heap_allocate,
 	.free = ion_system_secure_heap_free,

@@ -51,6 +51,9 @@ config ION_MSM
 config ALLOC_BUFFERS_IN_4K_CHUNKS
 	bool "Turns off allocation optimization and allocate only 4K pages"
 	depends on ARCH_QCOM && ION
+config ION_DEFER_FREE_NO_SCHED_IDLE
+	bool "Increases the priority of ION defer free thead"
+	depends on ION
 	help
           Choose this option if you want ION to allocate buffers in
           only 4KB chunks.

@@ -78,6 +78,66 @@ struct ion_platform_data {
 };
 
 #ifdef CONFIG_ION
+struct ion_vma_list {
+	struct list_head list;
+	struct vm_area_struct *vma;
+};
+
+/**
+ * struct ion_buffer - metadata for a particular buffer
+ * @ref:		reference count
+ * @node:		node in the ion_device buffers tree
+ * @dev:		back pointer to the ion_device
+ * @heap:		back pointer to the heap the buffer came from
+ * @flags:		buffer specific flags
+ * @private_flags:	internal buffer specific flags
+ * @size:		size of the buffer
+ * @priv_virt:		private data to the buffer representable as
+ *			a void *
+ * @lock:		protects the buffers cnt fields
+ * @kmap_cnt:		number of times the buffer is mapped to the kernel
+ * @vaddr:		the kernel mapping if kmap_cnt is not zero
+ * @sg_table:		the sg table for the buffer if dmap_cnt is not zero
+ * @vmas:		list of vma's mapping this buffer
+ */
+struct ion_dma_buf_attachment;
+struct ion_buffer {
+	struct ion_heap *heap;
+	struct sg_table *sg_table;
+	struct mutex kmap_lock;
+	struct work_struct free;
+	struct ion_dma_buf_attachment *attachments;
+	struct list_head map_freelist;
+	spinlock_t freelist_lock;
+	void *priv_virt;
+	void *vaddr;
+	unsigned int flags;
+	unsigned int private_flags;
+	size_t size;
+	int kmap_refcount;
+	struct msm_iommu_data iommu_data;
+};
+
+void ion_buffer_destroy(struct ion_buffer *buffer);
+
+/**
+ * struct ion_device - the metadata of the ion device node
+ * @dev:		the actual misc device
+ * @buffers:		an rb tree of all the existing buffers
+ * @buffer_lock:	lock protecting the tree of buffers
+ * @lock:		rwsem protecting the tree of heaps and clients
+ */
+struct ion_device {
+	struct miscdevice dev;
+	struct plist_head heaps;
+	struct rw_semaphore heap_rwsem;
+};
+
+/* refer to include/linux/pm.h */
+struct ion_pm_ops {
+	int (*freeze)(struct ion_heap *heap);
+	int (*restore)(struct ion_heap *heap);
+};
 
 /**
  * ion_reserve() - reserve memory for ion heaps if applicable
@@ -97,6 +157,17 @@ void ion_reserve(struct ion_platform_data *data);
  */
 struct ion_client *ion_client_create(struct ion_device *dev,
 				     const char *name);
+struct ion_heap {
+	struct plist_node node;
+	enum ion_heap_type type;
+	struct ion_heap_ops *ops;
+	unsigned long flags;
+	unsigned int id;
+	const char *name;
+	struct shrinker shrinker;
+	void *priv;
+	struct workqueue_struct *wq;
+};
 
 /**
  * ion_client_destroy() -  free's a client and all it's handles
@@ -106,6 +177,10 @@ struct ion_client *ion_client_create(struct ion_device *dev,
  * any handles it is holding.
  */
 void ion_client_destroy(struct ion_client *client);
+static inline bool ion_buffer_cached(struct ion_buffer *buffer)
+{
+	return buffer->flags & ION_FLAG_CACHED;
+}
 
 /**
  * ion_alloc - allocate ion memory
@@ -154,6 +229,22 @@ void ion_free(struct ion_client *client, struct ion_handle *handle);
  */
 int ion_phys(struct ion_client *client, struct ion_handle *handle,
 	     ion_phys_addr_t *addr, size_t *len);
+ * ion_device_add_heap - adds a heap to the ion device
+ * @dev:		the device
+ * @heap:		the heap to add
+ */
+void ion_device_add_heap(struct ion_device *idev, struct ion_heap *heap);
+
+/**
+ * some helpers for common operations on buffers using the sg_table
+ * and vaddr fields
+ */
+void *ion_heap_map_kernel(struct ion_heap *heap, struct ion_buffer *buffer);
+void ion_heap_unmap_kernel(struct ion_heap *heap, struct ion_buffer *buffer);
+int ion_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
+		      struct vm_area_struct *vma);
+int ion_heap_buffer_zero(struct ion_buffer *buffer);
+int ion_heap_pages_zero(struct page *page, size_t size, pgprot_t pgprot);
 
 /**
  * ion_map_dma - return an sg_table describing a handle
@@ -216,6 +307,9 @@ struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
  *
  * Given a dma-buf pointer, return true if ion created it and it is from
  * a secure heap.
+ * functions for creating and destroying the built in ion heaps.
+ * architectures can add their own custom architecture specific
+ * heaps as appropriate.
  */
 bool ion_dma_buf_is_secure(struct dma_buf *dmabuf);
 
@@ -262,6 +356,36 @@ static inline void *ion_map_kernel(struct ion_client *client,
 {
 	return ERR_PTR(-ENODEV);
 }
+/**
+ * struct ion_page_pool - pagepool struct
+ * @high_count:		number of highmem items in the pool
+ * @low_count:		number of lowmem items in the pool
+ * @high_items:		list of highmem items
+ * @low_items:		list of lowmem items
+ * @mutex:		lock protecting this struct and especially the count
+ *			item list
+ * @gfp_mask:		gfp_mask to use from alloc
+ * @order:		order of pages in the pool
+ * @list:		plist node for list of pools
+ * @cached:		it's cached pool or not
+ *
+ * Allows you to keep a pool of pre allocated pages to use from your heap.
+ * Keeping a pool of pages that is ready for dma, ie any cached mapping have
+ * been invalidated from the cache, provides a significant performance benefit
+ * on many systems
+ */
+struct ion_page_pool {
+	int high_count;
+	int low_count;
+	bool cached;
+	struct list_head high_items;
+	struct list_head low_items;
+	/* Protect the pool */
+	spinlock_t lock;
+	gfp_t gfp_mask;
+	unsigned int order;
+	struct plist_node list;
+};
 
 static inline void ion_unmap_kernel(struct ion_client *client,
 	struct ion_handle *handle) { }
@@ -285,6 +409,24 @@ static inline int ion_handle_get_flags(struct ion_client *client,
 bool ion_dma_buf_is_secure(struct dma_buf *dmabuf)
 {
 	return false;
+/**
+ * ion_pages_sync_for_device - cache flush pages for use with the specified
+ *                             device
+ * @dev:		the device the pages will be used with
+ * @page:		the first page to be flushed
+ * @size:		size in bytes of region to be flushed
+ * @dir:		direction of dma transfer
+ */
+static inline void ion_pages_sync_for_device(struct device *dev,
+					     struct page *page, size_t size,
+					     enum dma_data_direction dir)
+{
+	struct scatterlist sg;
+
+	sg_init_table(&sg, 1);
+	sg_set_page(&sg, page, size, 0);
+	sg_dma_address(&sg) = page_to_phys(page);
+	dma_sync_sg_for_device(dev, &sg, 1, dir);
 }
 
 #endif /* CONFIG_ION */
