@@ -187,7 +187,7 @@ static bool ocr_enabled;
 static bool ocr_nodes_called;
 static bool ocr_probed;
 static bool ocr_reg_init_defer;
-static bool hotplug_enabled;
+static bool hotplug_enabled = 0;
 static bool interrupt_mode_enable;
 static bool msm_thermal_probed;
 static bool gfx_crit_phase_ctrl_enabled;
@@ -3274,7 +3274,6 @@ static int __ref update_offline_cores(int val)
 {
 	return 0;
 }
-#endif
 
 static int do_gfx_phase_cond(void)
 {
