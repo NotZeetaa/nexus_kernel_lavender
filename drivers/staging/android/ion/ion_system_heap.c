@@ -845,6 +845,7 @@ struct ion_heap *ion_system_heap_create(struct ion_platform_heap *data)
 
 	mutex_init(&heap->split_page_mutex);
 
+	heap->heap.debug_show = ion_system_heap_debug_show;
 	return &heap->heap;
 
 err_create_cached_pools:
