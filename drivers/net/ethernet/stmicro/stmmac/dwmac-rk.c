@@ -2,6 +2,7 @@
  * dwmac-rk.c - Rockchip RK3288 DWMAC specific glue layer
  *
  * Copyright (C) 2014 Chen-Zhi (Roger Chen)
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * Chen-Zhi (Roger Chen)  <roger.chen@rock-chips.com>
  *

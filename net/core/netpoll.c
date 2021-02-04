@@ -6,6 +6,7 @@
  * based on the netconsole code from:
  *
  * Copyright (C) 2001  Ingo Molnar <mingo@redhat.com>
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Copyright (C) 2002  Red Hat, Inc.
  */
 

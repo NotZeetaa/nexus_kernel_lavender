@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 Red Hat, Inc. All Rights Reserved.
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Written by David Howells (dhowells@redhat.com)
  */
 #include <linux/module.h>

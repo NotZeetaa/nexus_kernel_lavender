@@ -1,4 +1,5 @@
 /* Copyright (C) 2009 Red Hat, Inc.
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Author: Michael S. Tsirkin <mst@redhat.com>
  *
  * This work is licensed under the terms of the GNU GPL, version 2.

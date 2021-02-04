@@ -1,6 +1,7 @@
 /* Faraday FOTG210 EHCI-like driver
  *
  * Copyright (c) 2013 Faraday Technology Corporation
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * Author: Yuan-Hsin Chen <yhchen@faraday-tech.com>
  *	   Feng-Hsin Chiang <john453@faraday-tech.com>

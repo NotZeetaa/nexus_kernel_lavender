@@ -2,6 +2,7 @@
  * mISDN driver for Colognechip HFC-S USB chip
  *
  * Copyright 2001 by Peter Sprenger (sprenger@moving-bytes.de)
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Copyright 2008 by Martin Bachem (info@bachem-it.com)
  *
  * This program is free software; you can redistribute it and/or modify

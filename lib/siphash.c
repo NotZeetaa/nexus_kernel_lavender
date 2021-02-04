@@ -1,4 +1,5 @@
 /* Copyright (C) 2016 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This file is provided under a dual BSD/GPLv2 license.
  *

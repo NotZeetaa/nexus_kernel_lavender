@@ -21,6 +21,7 @@
 /* This driver is based on the driver code originally developed
  * for the Intel IOC80314 (ForestLake) Gigabit Ethernet by
  * scott.wood@timesys.com  * Copyright (C) 2003 TimeSys Corporation
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * Currently changes from original version are:
  * - porting to Tsi108-based platform and kernel 2.6 (kong.lai@tundra.com)

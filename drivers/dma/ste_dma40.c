@@ -1,5 +1,6 @@
 /*
  * Copyright (C) Ericsson AB 2007-2008
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Copyright (C) ST-Ericsson SA 2008-2010
  * Author: Per Forlin <per.forlin@stericsson.com> for ST-Ericsson
  * Author: Jonas Aaberg <jonas.aberg@stericsson.com> for ST-Ericsson

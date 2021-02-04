@@ -1,5 +1,6 @@
 /*
  * Copyright 2001-2002 Pavel Machek <pavel@suse.cz>
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Based on code
  * Copyright 2001 Patrick Mochel <mochel@osdl.org>
  */

@@ -2,6 +2,7 @@
  * myri10ge.c: Myricom Myri-10G Ethernet driver.
  *
  * Copyright (C) 2005 - 2011 Myricom, Inc.
+ * Copyright (C) 2021 XiaoMi, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

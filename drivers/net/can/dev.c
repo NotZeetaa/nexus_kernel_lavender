@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2005 Marc Kleine-Budde, Pengutronix
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Copyright (C) 2006 Andrey Volkov, Varma Electronics
  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
  *

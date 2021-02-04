@@ -4,6 +4,7 @@
  * This driver supports USB CDC WCM Device Management.
  *
  * Copyright (c) 2007-2009 Oliver Neukum
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * Some code taken from cdc-acm.c
  *

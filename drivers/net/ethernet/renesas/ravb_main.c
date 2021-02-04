@@ -1,6 +1,7 @@
 /* Renesas Ethernet AVB device driver
  *
  * Copyright (C) 2014-2019 Renesas Electronics Corporation
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Copyright (C) 2015 Renesas Solutions Corp.
  * Copyright (C) 2015 Cogent Embedded, Inc. <source@cogentembedded.com>
  *

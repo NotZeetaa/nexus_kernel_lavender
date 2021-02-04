@@ -6,6 +6,7 @@
  * as a hardware reference for the Broadcom BCM2835 watchdog timer.
  *
  * Copyright (C) 2013 Lubomir Rintel <lkundrak@v3.sk>
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the

@@ -3,6 +3,7 @@
  * Samsung GT-B3730 and GT-B3710.
  *
  * Copyright (C) 2011 Marius Bjoernstad Kotsbak <marius@kotsbak.com>
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * Sponsored by Quicklink Video Distribution Services Ltd.
  *

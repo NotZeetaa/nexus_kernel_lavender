@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 Google, Inc.
+ * Copyright (C) 2021 XiaoMi, Inc.
  * Copyright (C) 2008 HTC Corporation
  * Copyright (c) 2012-2018 The Linux Foundation. All rights reserved.
  *

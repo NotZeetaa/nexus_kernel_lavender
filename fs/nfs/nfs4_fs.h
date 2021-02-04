@@ -2,6 +2,7 @@
  * linux/fs/nfs/nfs4_fs.h
  *
  * Copyright (C) 2005 Trond Myklebust
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * NFSv4-specific filesystem definitions and declarations
  */
