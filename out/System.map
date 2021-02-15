@@ -50018,7 +50018,7 @@ ffffff8009200000 r __param_str_initcall_debug
 ffffff8009200000 R __start_rodata
 ffffff8009200000 R _etext
 ffffff8009200010 R linux_proc_banner
-ffffff8009200040 R linux_banner
+ffffff8009200070 R linux_banner
 ffffff8009201000 r __param_str_fpsimd_settings
 ffffff8009201018 r regoffset_table
 ffffff8009201258 r user_aarch64_view
