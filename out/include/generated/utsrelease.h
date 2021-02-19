@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-#define UTS_RELEASE "4.4.258-NexusKernel-Old-Lavender-Eas-V2-g93c6651576f7"
-=======
-#define UTS_RELEASE "4.4.258-NexusKernel-Old-Lavender-Eas-V2-gd4858619f1e8-dirty"
->>>>>>> parent of 93c6651576f7... sched/core: Free dead mm structs asynchronously in finish_task_switch()
+#define UTS_RELEASE "4.4.258-NexusKernel-Old-Lavender-Eas-V2-g36cdaf9a182d-dirty"
