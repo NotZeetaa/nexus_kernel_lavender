@@ -144,6 +144,24 @@ Optional Properties:
 
 - qcom,l2pc-update-queue:
 				Disables L2PC on masked CPUs at queue time when it's true.
+- qcom,min-access-length:
+				Specify the minimum access length for the chip.
+				Either 32 or 64 bytes.
+				Based on the above options, program the appropriate bit into
+				certain protected registers and also pass to the user as
+				a property.
+- qcom,ubwc-mode:
+				Specify the ubwc mode for this chip.
+				1: UBWC 1.0
+				2: UBWC 2.0
+				3: UBWC 3.0
+				Based on the ubwc mode, program the appropriate bit into
+				certain protected registers and also pass to the user as
+				a property.
+- qcom,macrotiling-channels:
+				Specify the number of macrotiling channels for this chip.
+				This is programmed into certain registers and also pass to
+				the user as a property.
 
 - qcom,snapshot-size:
 				Specify the size of snapshot in bytes. This will override
