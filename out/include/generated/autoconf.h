@@ -1,7 +1,7 @@
 /*
  *
  * Automatically generated file; DO NOT EDIT.
- * Linux/arm64 4.4.254 Kernel Configuration
+ * Linux/arm64 4.4.258 Kernel Configuration
  *
  */
 #define CONFIG_NF_CONNTRACK_H323 1
@@ -494,6 +494,7 @@
 #define CONFIG_CPU_BOOST 1
 #define CONFIG_SND_SOC_EXT_CODEC 1
 #define CONFIG_QCOM_TDLS 1
+#define CONFIG_ELFCORE 1
 #define CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_RECOVERY 1
 #define CONFIG_BINFMT_ELF 1
 #define CONFIG_MSM_GLINK_PKT 1
@@ -957,7 +958,7 @@
 #define CONFIG_HAVE_ARM_SMCCC 1
 #define CONFIG_MSM_PIL_SSR_GENERIC 1
 #define CONFIG_MSM_VIDC_V4L2 1
-#define CONFIG_LOCALVERSION "-NexusKernel-Lavender-Q-old-V8"
+#define CONFIG_LOCALVERSION "-NexusKernel-Lavender-Q-old-V9"
 #define CONFIG_REGULATOR_PROXY_CONSUMER 1
 #define CONFIG_CRYPTO 1
 #define CONFIG_SCHED_DEBUG 1
