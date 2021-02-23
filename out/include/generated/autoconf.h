@@ -1,7 +1,7 @@
 /*
  *
  * Automatically generated file; DO NOT EDIT.
- * Linux/arm64 4.4.257 Kernel Configuration
+ * Linux/arm64 4.4.258 Kernel Configuration
  *
  */
 #define CONFIG_NF_CONNTRACK_H323 1
@@ -989,7 +989,7 @@
 #define CONFIG_HAVE_ARM_SMCCC 1
 #define CONFIG_MSM_PIL_SSR_GENERIC 1
 #define CONFIG_MSM_VIDC_V4L2 1
-#define CONFIG_LOCALVERSION "-NexusKernel-New-Lavender-Eas-V1"
+#define CONFIG_LOCALVERSION "-NexusKernel-Old-Lavender-Eas-V2"
 #define CONFIG_DEVFREQ_WAKE_BOOST_DURATION_MS 0
 #define CONFIG_REGULATOR_PROXY_CONSUMER 1
 #define CONFIG_CRYPTO 1

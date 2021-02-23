@@ -1,1 +1,1 @@
-#define UTS_RELEASE "4.4.257-NexusKernel-New-Lavender-Eas-V1-g7f9a13df7c2d"
+#define UTS_RELEASE "4.4.258-NexusKernel-Old-Lavender-Eas-V2-gd4858619f1e8-dirty"
