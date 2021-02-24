@@ -269,7 +269,7 @@ if DEVFREQ_BOOST
 
 config DEVFREQ_INPUT_BOOST_DURATION_MS
 	int "Input boost duration"
-	default "100"
+	default "64"
 	help
 	  Input boost duration in milliseconds for all boostable devices.
 
@@ -281,7 +281,7 @@ config DEVFREQ_WAKE_BOOST_DURATION_MS
 
 config DEVFREQ_MSM_CPUBW_BOOST_FREQ
 	int "Boost freq for cpubw device"
-	default "0"
+	default "4173"
 	help
 	  Boost frequency for the MSM DDR bus.
 
