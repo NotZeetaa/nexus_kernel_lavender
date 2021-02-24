@@ -9,13 +9,6 @@
 #include <linux/fb.h>
 #include <linux/input.h>
 #include <linux/kthread.h>
-#include <linux/sched.h>
-
-#ifdef CONFIG_DYNAMIC_STUNE_BOOST
-static int boost_slot;
-#endif /* CONFIG_DYNAMIC_STUNE_BOOST */
-
-unsigned long last_input_time;
 
 enum {
 	SCREEN_OFF,
@@ -198,16 +191,10 @@ static int fb_notifier_cb(struct notifier_block *nb, unsigned long action,
 
 		if (*blank == FB_BLANK_UNBLANK) {
 			clear_bit(SCREEN_OFF, &b->state);
-#ifdef CONFIG_DYNAMIC_STUNE_BOOST
-			reset_stune_boost(boost_slot);
-#endif
 			__devfreq_boost_kick_max(b,
 				CONFIG_DEVFREQ_WAKE_BOOST_DURATION_MS);
 		} else {
 			set_bit(SCREEN_OFF, &b->state);
-#ifdef CONFIG_DYNAMIC_STUNE_BOOST
-			do_stune_boost(0, &boost_slot);
-#endif
 			wake_up(&b->boost_waitq);
 		}
 	}
@@ -224,8 +211,6 @@ static void devfreq_boost_input_event(struct input_handle *handle,
 
 	for (i = 0; i < DEVFREQ_MAX; i++)
 		__devfreq_boost_kick(d->devices + i);
-
-	last_input_time = jiffies;
 }
 
 static int devfreq_boost_input_connect(struct input_handler *handler,
@@ -310,8 +295,8 @@ static int __init devfreq_boost_init(void)
 	for (i = 0; i < DEVFREQ_MAX; i++) {
 		struct boost_dev *b = d->devices + i;
 
-		thread[i] = kthread_run_perf_critical(devfreq_boost_thread, b,
-						      "devfreq_boostd/%d", i);
+		thread[i] = kthread_run(devfreq_boost_thread, b,
+					"devfreq_boostd/%d", i);
 		if (IS_ERR(thread[i])) {
 			ret = PTR_ERR(thread[i]);
 			pr_err("Failed to create kthread, err: %d\n", ret);
