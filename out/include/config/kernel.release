@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 4.4.258-NexusKernel-Old-Lavender-Eas-V2-gfd41f0b1d67a-dirty
+=======
+4.4.258-NexusKernel-Old-Lavender-Eas-V2-gd1c2d87fec57-dirty
+>>>>>>> parent of fd41f0b1d67ac... sched: Avoid scale real weight down to zero
