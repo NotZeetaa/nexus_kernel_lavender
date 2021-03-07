@@ -1,7 +1,7 @@
 /*
  *
  * Automatically generated file; DO NOT EDIT.
- * Linux/arm64 4.4.258 Kernel Configuration
+ * Linux/arm64 4.4.260 Kernel Configuration
  *
  */
 #define CONFIG_NF_CONNTRACK_H323 1
@@ -343,7 +343,6 @@
 #define CONFIG_LIMITS_MONITOR 1
 #define CONFIG_ARCH_WANT_OPTIONAL_GPIOLIB 1
 #define CONFIG_64BIT_PADDR 1
-#define CONFIG_MSM_BCL_CTL 1
 #define CONFIG_NLS_ISO8859_1 1
 #define CONFIG_CRYPTO_WORKQUEUE 1
 #define CONFIG_TEXTSEARCH_BM 1
@@ -1129,7 +1128,6 @@
 #define CONFIG_FRAME_WARN 0
 #define CONFIG_NET_VENDOR_AGERE 1
 #define CONFIG_HID_GENERIC 1
-#define CONFIG_MSM_BCL_PERIPHERAL_CTL 1
 #define CONFIG_ARCH_MMAP_RND_BITS 18
 #define CONFIG_GENERIC_HWEIGHT 1
 #define CONFIG_INITRAMFS_SOURCE ""
