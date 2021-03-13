@@ -69,4 +69,5 @@ cd ..
 cd ..
 cd ..
 cd ..
+cd $KERNEL_DIR
 
