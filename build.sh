@@ -38,7 +38,7 @@ compile
    rm -f /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/Image.gz-dtb*
    cp -af /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/nexus/out/arch/arm64/boot/Image.gz-dtb /data/data/com.termux/files/home/ubuntu-in-termux/ubuntu-fs/root/flzip/
    
-   zip -r9 Nexus-Eas-lavender-old-V1.zip * -x .git README.md *placeholder
+   zip -r9 neXus-Lavender-Eas-old-V3.zip * -x .git README.md *placeholder
 
    echo "-------------------"
    echo "Build Complet in:"
