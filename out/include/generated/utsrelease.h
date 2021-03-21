@@ -1,1 +1,1 @@
-#define UTS_RELEASE "4.4.262-neXus-Lavender-Eas-old-V3-g312bf64dff1f-dirty"
+#define UTS_RELEASE "4.4.262-neXus-Lavender-Eas-old-V3-g1fbd4896fd82"
