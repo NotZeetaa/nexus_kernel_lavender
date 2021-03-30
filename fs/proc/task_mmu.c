@@ -458,9 +458,6 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 		}
 
 		if (is_stack(priv, vma)) {
-			name = "[stack]";
-			goto done;
-		if (is_stack(vma)) {
 			seq_write(m, " [stack]\n", 9);
 			return;
 		}
@@ -816,10 +813,6 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 
 	if (!rollup_mode) {
 		show_map_vma(m, vma, is_pid);
-		if (vma_get_anon_name(vma)) {
-			seq_puts(m, "Name:          ");
-			seq_print_vma_name(m, vma);
-		}
 	} else if (last_vma) {
 		show_vma_header_prefix(
 			m, mss->first_vma_start, vma->vm_end, 0, 0, 0, 0);
@@ -830,8 +823,6 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 	}
 
 	if (!rollup_mode && vma_get_anon_name(vma)) {
-		seq_puts(m, "Name:           ");
-	if (vma_get_anon_name(vma)) {
 		seq_puts(m, "Name:          ");
 		seq_print_vma_name(m, vma);
 	}
@@ -1144,11 +1135,12 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
 		};
 
 		if (type == CLEAR_REFS_MM_HIWATER_RSS) {
+
 			/*
 			 * Writing 5 to /proc/pid/clear_refs resets the peak
 			 * resident set size to this mm's current rss value.
 			 */
-			down_write(&mm->mmap_sem);
+		    down_write(&mm->mmap_sem);
 			reset_mm_hiwater_rss(mm);
 			up_write(&mm->mmap_sem);
 			goto out_mm;
@@ -1180,7 +1172,7 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
 					goto out_mm;
 				}
 				for (vma = mm->mmap; vma; vma = vma->vm_next) {
-					vma->vm_flags &= ~VM_SOFTDIRTY;
+				    vma->vm_flags &= ~VM_SOFTDIRTY;
 					vma_set_page_prot(vma);
 				}
 				downgrade_write(&mm->mmap_sem);
