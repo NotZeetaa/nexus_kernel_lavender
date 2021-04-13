@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Cloning dependencies"
 git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
-git clone --depth=1 https://github.com/akira-vishal/AnyKernel3.git AnyKernel
+git clone --depth=1 https://github.com/NotZeetaa/Flashable_Zip AnyKernel
 echo "Done"
 DEVICE=lavender
 DEFCONFIG=lavender-perf_defconfig
