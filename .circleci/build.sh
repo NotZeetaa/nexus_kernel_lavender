@@ -3,7 +3,7 @@ echo "Cloning dependencies"
 git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
 git clone --depth=1 https://github.com/akira-vishal/AnyKernel3.git AnyKernel
 echo "Done"
-DEVICE=Surya
+DEVICE=lavender
 DEFCONFIG=lavender-perf_defconfig
 VERSION=V4
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
@@ -13,7 +13,6 @@ KERNEL_DIR=$(pwd)
 PATH="${PWD}/clang/bin:$PATH"
 export KBUILD_COMPILER_STRING="$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 export ARCH=arm64
-export LOCALVERSION="-neXus-Lavender-Eas-old-V4"
 export KBUILD_BUILD_HOST=circleci
 export KBUILD_BUILD_USER="NotZeetaa"
 # sticker plox
