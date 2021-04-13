@@ -5,7 +5,7 @@ git clone --depth=1 https://github.com/akira-vishal/AnyKernel3.git AnyKernel
 echo "Done"
 DEVICE=lavender
 DEFCONFIG=lavender-perf_defconfig
-VERSION=V4
+VERSION=V4.2
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
 TANGGAL=$(date +"%F-%S")
 START=$(date +"%s")
