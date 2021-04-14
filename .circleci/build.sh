@@ -53,7 +53,7 @@ function compile() {
     make O=out ARCH=arm64 ${DEFCONFIG}
     make -j$(nproc --all) O=out \
                           ARCH=arm64 \
-			  CC="ccache clang" \
+			  CC=clang \
 			  CROSS_COMPILE=aarch64-linux-gnu- \
 			  CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
