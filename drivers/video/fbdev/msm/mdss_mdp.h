@@ -1682,6 +1682,7 @@ struct mdss_data_type *mdss_mdp_get_mdata(void);
 int mdss_mdp_secure_session_ctrl(unsigned int enable, u64 flags);
 
 int mdss_mdp_overlay_init(struct msm_fb_data_type *mfd);
+int check_userspace_fps_chose(struct mdss_panel_data *pdata);
 int mdss_mdp_dfps_update_params(struct msm_fb_data_type *mfd,
 	struct mdss_panel_data *pdata, struct dynamic_fps_data *data);
 int mdss_mdp_layer_atomic_validate(struct msm_fb_data_type *mfd,
