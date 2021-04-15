@@ -246,8 +246,6 @@ int move_normal_pmd(struct vm_area_struct *vma, struct vm_area_struct *new_vma,
 }
 #endif
 
-#define LATENCY_LIMIT	(64 * PAGE_SIZE)
-
 unsigned long move_page_tables(struct vm_area_struct *vma,
 		unsigned long old_addr, struct vm_area_struct *new_vma,
 		unsigned long new_addr, unsigned long len,
