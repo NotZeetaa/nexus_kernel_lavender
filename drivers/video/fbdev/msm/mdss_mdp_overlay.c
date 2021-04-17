@@ -3504,18 +3504,6 @@ static void dfps_update_panel_params(struct mdss_panel_data *pdata,
 	}
 }
 
-int check_userspace_fps_chose(struct mdss_panel_data *pdata)
-{
-	int ret = pdata->panel_info.max_fps; /* Default */
-
-	if(custom_hz) {
-		ret = 40;
-		return ret; /* return custom fps */
-	}
-
-	return ret;
-}
-
 int mdss_mdp_dfps_update_params(struct msm_fb_data_type *mfd,
 	struct mdss_panel_data *pdata, struct dynamic_fps_data *dfps_data)
 {
