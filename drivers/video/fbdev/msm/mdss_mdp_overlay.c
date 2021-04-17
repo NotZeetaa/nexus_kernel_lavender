@@ -54,9 +54,6 @@
 #define DFPS_DATA_MAX_FPS 0x7fffffff
 #define DFPS_DATA_MAX_CLK_RATE 250000
 
-bool custom_hz = false;
-module_param(custom_hz, bool, 0644);
-
 static int mdss_mdp_overlay_free_fb_pipe(struct msm_fb_data_type *mfd);
 static int mdss_mdp_overlay_fb_parse_dt(struct msm_fb_data_type *mfd);
 static int mdss_mdp_overlay_off(struct msm_fb_data_type *mfd);
@@ -3525,7 +3522,6 @@ int mdss_mdp_dfps_update_params(struct msm_fb_data_type *mfd,
 	struct fb_var_screeninfo *var = &mfd->fbi->var;
 	struct mdss_overlay_private *mdp5_data = mfd_to_mdp5_data(mfd);
 	u32 dfps = dfps_data->fps;
-	int change_fps = check_userspace_fps_chose(pdata);
 
 	mutex_lock(&mdp5_data->dfps_lock);
 
@@ -3536,10 +3532,10 @@ int mdss_mdp_dfps_update_params(struct msm_fb_data_type *mfd,
 				pdata->panel_info.min_fps);
 		mutex_unlock(&mdp5_data->dfps_lock);
 		return -EINVAL;
-	} else if (dfps > change_fps) {
+	} else if (dfps > pdata->panel_info.max_fps) {
 		pr_warn("Unsupported FPS. Configuring to max_fps = %d\n",
 				pdata->panel_info.max_fps);
-		dfps = change_fps;
+		dfps = pdata->panel_info.max_fps;
 		dfps_data->fps = dfps;
 	}
 
