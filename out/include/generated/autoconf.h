@@ -1,7 +1,11 @@
 /*
  *
  * Automatically generated file; DO NOT EDIT.
+<<<<<<< HEAD
  * Linux/arm64 4.4.266 Kernel Configuration
+=======
+ * Linux/arm64 4.4.258 Kernel Configuration
+>>>>>>> parent of ffe34c3ecf20... proc: Kill Facebook crap
  *
  */
 #define CONFIG_NF_CONNTRACK_H323 1
@@ -734,7 +738,7 @@
 #define CONFIG_VM_EVENT_COUNTERS 1
 #define CONFIG_CRYPTO_ECB 1
 #define CONFIG_RMNET_IPA3 1
-#define CONFIG_DEVFREQ_INPUT_BOOST_DURATION_MS 70
+#define CONFIG_DEVFREQ_INPUT_BOOST_DURATION_MS 60
 #define CONFIG_SND_DYNAMIC_MINORS 1
 #define CONFIG_PINCTRL_WCD 1
 #define CONFIG_NF_CONNTRACK_AMANDA 1
@@ -990,7 +994,11 @@
 #define CONFIG_HAVE_ARM_SMCCC 1
 #define CONFIG_MSM_PIL_SSR_GENERIC 1
 #define CONFIG_MSM_VIDC_V4L2 1
+<<<<<<< HEAD
 #define CONFIG_LOCALVERSION "-neXus-Lavender-Eas-old-V4"
+=======
+#define CONFIG_LOCALVERSION "-NexusKernel-New-Lavender-Eas-V2"
+>>>>>>> parent of ffe34c3ecf20... proc: Kill Facebook crap
 #define CONFIG_DEVFREQ_WAKE_BOOST_DURATION_MS 0
 #define CONFIG_REGULATOR_PROXY_CONSUMER 1
 #define CONFIG_CRYPTO 1
@@ -1022,6 +1030,7 @@
 #define CONFIG_NET_VENDOR_MICREL 1
 #define CONFIG_F2FS_FS_POSIX_ACL 1
 #define CONFIG_SND_SOC_INT_CODEC 1
+#define CONFIG_THERMAL_MONITOR 1
 #define CONFIG_CRYPTO_CRC32C 1
 #define CONFIG_SERIAL_CORE 1
 #define CONFIG_FUSE_FS 1
