@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Cloning dependencies"
 git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
-git clone --depth=1 https://github.com/NotZeetaa/Flashable_Zip AnyKernel
+git clone --depth=1 https://github.com/Prashant-1695/AnyKernel3-1 AnyKernel
 echo "Done"
 DEVICE=lavender
 DEFCONFIG=lavender-perf_defconfig
@@ -14,13 +14,7 @@ PATH="${PWD}/clang/bin:$PATH"
 export KBUILD_COMPILER_STRING="$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 export ARCH=arm64
 export KBUILD_BUILD_HOST=circleci
-export KBUILD_BUILD_USER="NotZeetaa"
-# sticker plox
-function sticker() {
-    curl -s -X POST "https://api.telegram.org/bot$token/sendSticker" \
-        -d sticker="CAACAgEAAxkBAAEnKnJfZOFzBnwC3cPwiirjZdgTMBMLRAACugEAAkVfBy-aN927wS5blhsE" \
-        -d chat_id=$chat_id
-}
+export KBUILD_BUILD_USER="Prashant"
 # Send info plox channel
 function sendinfo() {
     curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" \
@@ -69,7 +63,6 @@ function zipping() {
     zip -r9 neXus-${VERSION}_${DEVICE}-KERNEL-${TANGGAL}.zip *
     cd ..
 }
-sticker
 sendinfo
 compile
 zipping
