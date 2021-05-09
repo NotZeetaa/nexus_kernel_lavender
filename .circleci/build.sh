@@ -1,25 +1,18 @@
 #!/usr/bin/env bash
 echo "Cloning dependencies"
 git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
-git clone --depth=1 https://github.com/Prashant-1695/AnyKernel3-1.git AnyKernel
+git clone --depth=1 https://github.com/Prashant-1695/AnyKernel3-1 AnyKernel
 echo "Done"
-VERSION=V5
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
+CAMERA=OldCam
 TANGGAL=$(date +"%F-%S")
 START=$(date +"%s")
 KERNEL_DIR=$(pwd)
 PATH="${PWD}/clang/bin:$PATH"
 export KBUILD_COMPILER_STRING="$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 export ARCH=arm64
-export LOCALVERSION="-${VERSION}-EAS"
 export KBUILD_BUILD_HOST=circleci
-export KBUILD_BUILD_USER="Prashant"
-# sticker plox
-function sticker() {
-    curl -s -X POST "https://api.telegram.org/bot$token/sendSticker" \
-        -d sticker="CAADBQADmwEAAvQneFfl-dS0RNs7CQI" \
-        -d chat_id=$chat_id
-}
+export KBUILD_BUILD_USER="prashant"
 # Send info plox channel
 function sendinfo() {
     curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" \
@@ -65,14 +58,12 @@ function compile() {
 # Zipping
 function zipping() {
     cd AnyKernel || exit 1
-    zip -r9 neXus-${VERSION}-EAS-kernel-lavender-${TANGGAL}.zip *
+    zip -r9 neXus-EAS-V6-lavender-${CAMERA}-${TANGGAL}.zip *
     cd ..
 }
-sticker
 sendinfo
 compile
 zipping
 END=$(date +"%s")
 DIFF=$(($END - $START))
 push
-
