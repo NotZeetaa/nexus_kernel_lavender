@@ -175,8 +175,6 @@ struct devfreq {
 
 	unsigned long min_freq;
 	unsigned long max_freq;
-	bool is_boost_device;
-	bool max_boost;
 	bool stop_polling;
 	bool is_boost_device;
 	bool max_boost;
