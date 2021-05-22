@@ -4,7 +4,7 @@ git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
 git clone --depth=1 https://github.com/Prashant-1695/Flashable_Zip AnyKernel
 echo "Done"
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
-CAMERA=OldCam
+CAMERA=NewCam
 TANGGAL=$(date +"%F-%S")
 START=$(date +"%s")
 KERNEL_DIR=$(pwd)
@@ -58,7 +58,7 @@ function compile() {
 # Zipping
 function zipping() {
     cd AnyKernel || exit 1
-    zip -r9 neXus-EAS-V6-lavender-${CAMERA}-${TANGGAL}.zip *
+    zip -r9 neXus-EAS-V6-66Hz-lavender-${CAMERA}-${TANGGAL}.zip *
     cd ..
 }
 sendinfo
