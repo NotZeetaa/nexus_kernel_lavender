@@ -58,7 +58,7 @@ function compile() {
 # Zipping
 function zipping() {
     cd AnyKernel || exit 1
-    zip -r9 neXus-EAS-V6-66Hz-lavender-${CAMERA}-${TANGGAL}.zip *
+    zip -r9 neXus-EAS-V6-lavender-${CAMERA}-${TANGGAL}.zip *
     cd ..
 }
 sendinfo
