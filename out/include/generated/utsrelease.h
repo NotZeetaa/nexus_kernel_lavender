@@ -1,1 +1,0 @@
-#define UTS_RELEASE "4.4.264-neXus-Lavender-old-V10"
