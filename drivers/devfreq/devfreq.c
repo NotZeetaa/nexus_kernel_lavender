@@ -195,11 +195,10 @@ int update_devfreq(struct devfreq *devfreq)
 	if (!devfreq->governor)
 		return -EINVAL;
 
-		/* Reevaluate the proper frequency */
-		err = devfreq->governor->get_target_freq(devfreq, &freq, &flags);
-		if (err)
-			return err;
-	
+	/* Reevaluate the proper frequency */
+	err = devfreq->governor->get_target_freq(devfreq, &freq, &flags);
+	if (err)
+		return err;
 
 	/*
 	 * Adjust the frequency with user freq and QoS.
