@@ -429,7 +429,6 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int len,
 	if (IS_ENABLED(CONFIG_FORCE_ALLOC_FROM_DMA_ZONE))
 		gfp_mask |= GFP_DMA;
 
-	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
 	/* If requested length is either too small or too big,
 	 * we use kmalloc() for skb->head allocation.
 	 */
