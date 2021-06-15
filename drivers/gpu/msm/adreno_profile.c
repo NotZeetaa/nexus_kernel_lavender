@@ -78,6 +78,10 @@
 #define SIZE_PIPE_ENTRY(cnt) (50 + (cnt) * 62)
 #define SIZE_LOG_ENTRY(cnt) (6 + (cnt) * 5)
 
+extern struct adreno_context_type ctxt_type_table;
+
+extern const char *get_api_type_str(unsigned int type);
+
 static inline uint _ib_start(struct adreno_device *adreno_dev,
 			 unsigned int *cmds)
 {
