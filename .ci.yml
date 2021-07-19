@@ -1,8 +1,8 @@
 kind: pipeline
-name : xKernel Compiler
+name : neXus Lavender
 version: rev1.5_template
 steps:
- - name: xKernel Compilation
+ - name: neXus Lavender
    image: xyzuan/xdocker:latest
    environment:
      token:
@@ -12,4 +12,4 @@ steps:
    commands:
      - git clone --depth=1 https://github.com/NotZeetaa/nexus_kernel_lavender lavender
      - cd lavender
-     - bash .circleci/build.sh
+     - bash build.sh
