@@ -12,4 +12,4 @@ steps:
    commands:
      - git clone --depth=1 https://github.com/NotZeetaa/nexus_kernel_lavender lavender
      - cd lavender
-     - bash compile.sh
+     - bash build.sh
