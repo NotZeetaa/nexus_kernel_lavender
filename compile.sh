@@ -11,7 +11,7 @@ KERNEL_DIR=$(pwd)
 PATH="${PWD}/clang/bin:$PATH"
 export KBUILD_COMPILER_STRING="$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 export ARCH=arm64
-export KBUILD_BUILD_HOST=circleci
+export KBUILD_BUILD_HOST=droneci
 export KBUILD_BUILD_USER="prashant"
 # Send info plox channel
 function sendinfo() {
