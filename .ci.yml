@@ -1,8 +1,7 @@
 kind: pipeline
-name : neXus Lavender
-version: rev1.5_template
+name : neXus
 steps:
- - name: neXus Lavender
+ - name: SDM660
    image: xyzuan/xdocker:latest
    environment:
      token:
@@ -10,6 +9,6 @@ steps:
      chat_id:
        from_secret: chat_id
    commands:
-     - git clone --depth=1 --single-branch -b hmp https://github.com/NotZeetaa/nexus_kernel_lavender lavender
-     - cd lavender
+     - git clone --depth=1 https://github.com/Ahaduzzaman2020/kernel_xiaomi_lavender.git XD
+     - cd XD
      - bash build.sh
