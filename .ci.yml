@@ -10,6 +10,6 @@ steps:
      chat_id:
        from_secret: chat_id
    commands:
-     - git clone --depth=1 --single-branch -b eas https://github.com/NotZeetaa/nexus_kernel_lavender lavender
+     - git clone --depth=1 --single-branch -b eas-beta https://github.com/NotZeetaa/nexus_kernel_lavender lavender
      - cd lavender
      - bash build.sh
